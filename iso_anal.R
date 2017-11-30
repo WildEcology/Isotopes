@@ -45,6 +45,5 @@ ggplot(iso, aes(year, avnode, color=wpbr))+
 ggplot(iso, aes(year, avnode, color=wpbr))+
   geom_boxplot()
 
-
 summary(lm(avnode~wpbr+year, data=iso))
 
