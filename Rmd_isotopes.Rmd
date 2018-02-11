@@ -1,0 +1,79 @@
+---
+title: "First Analyses for Isotopes February '18"
+author: "Joan"
+date: "2/10/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This R Markdown document evalulates stable isotopes from sugar pine needles collected in August, 2017
+
+## First look at data
+```{r}
+library(ggplot2)
+##read in data
+isotopes = read.csv("2018_IsotopeData.csv", header = T)
+
+
+names(isotopes)[1:15]=tolower(names(isotopes[1:15]))
+
+
+summary(lm(d13cpermil~year+treatment, data=isotopes))
+summary(lm(d15npermil~year+treatment, data=isotopes))
+
+
+ggplot(isotopes, aes(year, d13cpermil, color=treatment))+
+  geom_smooth()+
+  geom_point()+
+  theme_classic()
+
+ggplot(isotopes, aes(year, d15npermil, color=treatment))+
+  geom_smooth()+
+  geom_point()+
+  theme_classic()
+
+
+#c data normal? - yes!
+qqnorm(isotopes$d13cpermil)
+qqline(isotopes$d13cpermil)
+
+#n data normal? - pretty good
+qqnorm(isotopes$d15npermil)
+qqline(isotopes$d15npermil)
+
+##are the independent variables (year+treatment) multicollinear?
+summary(lm(year~treatment, data=isotopes)) ## nope
+
+##DEALING WITH PAIRED, REPEATED MEASURES
+##violation=non-independent variables - we sampled the same individual for six years
+
+##since these are repeat measures (one invidual for 6 years) so we use a Two-Way ANOVA with Repeated Measures
+##and add an error term, which controls for the between-pair variation
+##We can also control for autocorrelation adding in year as an independent variable into the anova
+
+
+summary(lm(d13cpermil~year+treatment, data=isotopes))
+summary(aov(d13cpermil~year+treatment+Error(pair/(year+treatment)), data=isotopes))
+summary(aov(d13cpermil~year+treatment, data=isotopes))
+
+summary(lm(d15npermil~year+treatment, data=isotopes))
+summary(aov(d15npermil~year+treatment+Error(pair/(year+treatment)), data=isotopes))
+summary(aov(d15npermil~year+treatment, data=isotopes))
+
+
+##boxplots
+ggplot(isotopes, aes(x=year, y=d13cpermil, color=treatment))+
+  geom_boxplot(position = "dodge")+
+  labs(title="Average C13 between infected and uninfected trees", x="Treatment", y="13C (o/oo")+
+  theme_bw()
+
+ggplot(isotopes, aes(x=year, y=d15npermil, color=treatment))+
+  geom_boxplot(position = "dodge")+
+  labs(title="Average N between infected and uninfected trees", x="Treatment", y="N (o/oo) ")+
+  theme_bw()
+

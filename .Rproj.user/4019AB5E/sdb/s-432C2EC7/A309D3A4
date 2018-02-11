@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\nlibrary(ggplot2)\n\n##read in data\nisotopes = read.csv(\"2018_IsotopeData.csv\", header = T)\n\nhead(isotopes)\nnames(isotopes)[1:15]=tolower(names(isotopes[1:15]))\n\n\nsummary(lm(d13cpermil~year+treatment, data=isotopes))\nsummary(lm(d15npermil~year+treatment, data=isotopes))\n\n\nggplot(isotopes, aes(year, d13cpermil, color=treatment))+\n  geom_smooth()+\n  geom_point()+\ntheme_classic()\n\nggplot(isotopes, aes(year, d15npermil, color=treatment))+\n  geom_smooth()+\n  geom_point()+\n  theme_classic()\n\n\n#c data normal? - yes!\nqqnorm(isotopes$d13cpermil)\nqqline(isotopes$d13cpermil)\n\n#n data normal? - pretty good\nqqnorm(isotopes$d15npermil)\nqqline(isotopes$d15npermil)\n\n##are the independent variables (year+treatment) multicollinear?\nsummary(lm(year~treatment, data=isotopes)) ## nope\n\n##DEALING WITH PAIRED, REPEATED MEASURES\n##violation=non-independent variables - we sampled the same individual for six years\n\n##since these are repeat measures (one invidual for 6 years) so we use a Two-Way ANOVA with Repeated Measures\n##and add an error term, which controls for the between-pair variation\n##We can also control for autocorrelation adding in year as an independent variable into the anova\n\n\nsummary(lm(d13cpermil~year+treatment, data=isotopes))\nsummary(aov(d13cpermil~year+treatment+Error(pair/(year+treatment)), data=isotopes))\nsummary(aov(d13cpermil~year+treatment, data=isotopes))\n\nsummary(lm(d15npermil~year+treatment, data=isotopes))\nsummary(aov(d15npermil~year+treatment+Error(pair/(year+treatment)), data=isotopes))\nsummary(aov(d15npermil~year+treatment, data=isotopes))\n\n\n##boxplots\nggplot(isotopes, aes(x=year, y=d13cpermil, color=treatment))+\n  geom_boxplot(position = \"dodge\")+\n  labs(title=\"Average C13 between infected and uninfected trees\", x=\"Year\", y=\"δ 13C (o/oo) \")+\n  theme_bw()\n\nggplot(isotopes, aes(x=year, y=d15npermil, color=treatment))+\n  geom_boxplot(position = \"dodge\")+\n  labs(title=\"Average N between infected and uninfected trees\", x=\"Year\", y=\"N (o/oo) \")+\n  theme_bw()\n  \n\n",
+    "created" : 1518230042217.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "722416984",
+    "id" : "A309D3A4",
+    "lastKnownWriteTime" : 1518383609,
+    "last_content_update" : 1518383609661,
+    "path" : "~/oh-berkeley-4.github.io/Isotopes/Isotopes.R",
+    "project_path" : "Isotopes.R",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

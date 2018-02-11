@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(ggplot2)\nlibrary(lme4)\nlibrary(tidyr)\nlibrary(reshape2)\nlibrary(lattice)\n\niso=read.csv(\"data_nov29.csv\")\nhead(iso)\n\n##simple linear models\nsummary(lm(avnum~wpbr+year, data=iso))\nsummary(lm(avlen~wpbr+year, data=iso))\n\n\niso2=iso\niso2$wpbr_num=ifelse(iso2$wpbr==\"yes\", 1, 0)\nsummary(glmer(wpbr_num~avlen+(1|year), data=iso2, family=binomial))\n\n\n##plot\nggplot(iso, aes(year, avnum, color=wpbr))+\n  geom_smooth()+\n  scale_x_reverse()+\n  labs(title=\"Average number of needles across years\", x=\"Year\", y=\"Ave Number\")+\n  theme_classic()\n\nxyplot(avlen~year, data=iso, na.rm=TRUE, type=c(\"p\", \"r\"))\n\nggplot(iso, aes(year, avlen, color=wpbr))+\n  geom_boxplot(position = \"dodge\")+\n  scale_x_reverse()+\n  labs(title=\"Average needle length across years\", x=\"Year\", y=\"Ave Needle Length (mm)\")+\n  theme_classic()\n\nboxplot(avlen~wpbr, data=iso) \n\n##nodes\nggplot(iso, aes(year, avnode, color=wpbr))+\n  geom_smooth()+\n  scale_x_reverse()+\n  labs(title=\"Average length across years\", x=\"Year\", y=\"Ave Length\")+\n  theme_classic()\n\n\nggplot(iso, aes(year, avnode, color=wpbr))+\n  geom_boxplot()\n\nsummary(lm(avnode~wpbr+year, data=iso))\n\n",
+    "created" : 1518230409627.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "145980858",
+    "id" : "82854C51",
+    "lastKnownWriteTime" : 1518230465,
+    "last_content_update" : 1518230465,
+    "path" : "~/oh-berkeley-4.github.io/Isotopes/iso_anal.R",
+    "project_path" : "iso_anal.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
